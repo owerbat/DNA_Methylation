@@ -1,9 +1,12 @@
 from scipy import stats
-import numpy as np
 
 
 def get_ages():
-    file = open("..\\methylation_data\\age.txt", 'r', encoding="utf-8")
+    try:
+        file = open("..\\methylation_data\\age.txt", 'r', encoding="utf-8")
+    except FileNotFoundError:
+        print("methylation_data.txt is not founded")
+        exit(2)
 
     ages = []
     while True:
@@ -28,7 +31,11 @@ def gene_data_read(file):
 
 
 def main():
-    file = open("..\\methylation_data\\gene_data.txt", 'r', encoding="utf-8")
+    try:
+        file = open("..\\methylation_data\\gene_data.txt", 'r', encoding="utf-8")
+    except FileNotFoundError:
+        print("gene_data.txt is not founded")
+        exit(2)
 
     r_values = []
     names = []
