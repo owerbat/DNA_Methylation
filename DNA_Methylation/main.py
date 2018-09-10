@@ -30,7 +30,7 @@ def gene_data_read(file):
     return gene_name, gene
 
 
-def main():
+def calculate_best_genes(way):
     try:
         file = open("..\\methylation_data\\gene_data.txt", 'r', encoding="utf-8")
     except FileNotFoundError:
@@ -44,7 +44,10 @@ def main():
         name, y = gene_data_read(file)
         if len(y) == 0:
             break
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+        if way:
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+        else:
+            r_value, pval = stats.spearmanr(x, y)
         r_values.append(r_value)
         names.append(name)
 
@@ -56,10 +59,14 @@ def main():
         table = list([r_values[i], names[i]] for i in range(len(names)))
         table.sort(reverse=True)
 
-        result_file = open("Results.txt", 'w', encoding="utf-8")
+        if way:
+            result_file = open("Results_Linear_Regression.txt", 'w', encoding="utf-8")
+        else:
+            result_file = open("Results_Spearman_Correlation.txt", 'w', encoding="utf-8")
         for i in range(10):
             result_file.write(str(i+1) + ') ' + str(table[i][1]) + ' - ' + str(table[i][0]) + '\n')
         result_file.close()
 
 
-main()
+# calculate_best_genes(True)
+calculate_best_genes(False)
