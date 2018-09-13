@@ -44,9 +44,9 @@ def calculate_best_genes(way):
         name, y = gene_data_read(file)
         if len(y) == 0:
             break
-        if way:
+        if way == 1:
             slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-        else:
+        elif way == 0:
             r_value, pval = stats.spearmanr(x, y)
         r_values.append(r_value)
         names.append(name)
@@ -59,14 +59,25 @@ def calculate_best_genes(way):
         table = list([r_values[i], names[i]] for i in range(len(names)))
         table.sort(reverse=True)
 
-        if way:
+        if way == 1:
             result_file = open("Results_Linear_Regression.txt", 'w', encoding="utf-8")
-        else:
+        elif way == 0:
             result_file = open("Results_Spearman_Correlation.txt", 'w', encoding="utf-8")
         for i in range(10):
             result_file.write(str(i+1) + ') ' + str(table[i][1]) + ' - ' + str(table[i][0]) + '\n')
         result_file.close()
 
 
-# calculate_best_genes(True)
-calculate_best_genes(False)
+def main():
+    the_way = int(input('''What kind of method do you want to use?
+0 - Spearman correlation
+1 - Linear regression
+... '''))
+    if the_way == 0 or the_way == 1:
+        calculate_best_genes(the_way)
+        print("Done!")
+    else:
+        print("Wrong value!")
+
+
+main()
