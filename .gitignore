@@ -2,3 +2,5 @@
 .idea/
 venv/
 methylation_data/*.txt
+
+*.dat
