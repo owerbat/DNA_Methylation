@@ -45,6 +45,13 @@ def correct_data(data):
     return data
 
 
+def get_cpg_to_gene_dictionary(data):
+    dic = {}
+    for index in data.index:
+        dic.update({data.at[index, 'ID_REF']: data.at[index, 'UCSC_REFGENE_NAME']})
+    return dic
+
+
 def main():
     try:
         file = open('annotations.dat', 'rb')
@@ -56,11 +63,8 @@ def main():
     data = correct_data(data)
     print(data)
     print(list(data.columns))
-    '''try:
-        float(data['n.CpG'][1])
-    except ValueError:
-        data['n.CpG'][1] = np.nan
-    print(data['n.CpG'][1])'''
+    cpg_to_gene = get_cpg_to_gene_dictionary(data)
+    print(len(cpg_to_gene))
 
 
 main()
