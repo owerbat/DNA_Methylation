@@ -23,8 +23,8 @@ def get_data_frame(file_name):
 
 
 def main():
-    data = get_data_frame('D:\\DNA Methylation\\annotations.txt')
-    file = open('annotations.dat', 'wb')
+    data = get_data_frame('..\\methylation_data\\annotations.txt')
+    file = open('..\\methylation_data\\annotations.dat', 'wb')
     pickle.dump(data, file)
     file.close()
 
