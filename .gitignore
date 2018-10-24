@@ -4,4 +4,5 @@ venv/
 methylation_data/*.txt
 
 *.dat
-result_table.txt
+result_gene_table.txt
+result_bop_table.txt

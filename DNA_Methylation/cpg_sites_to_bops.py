@@ -47,23 +47,23 @@ def correct_data(data):
     return data
 
 
-def get_cpg_to_gene_dictionary(data):
+def get_cpg_to_bop_dictionary(data):
     data = data.sort_values(by='MAPINFO')
     dic = {}
     for index in data.index:
-        dic.update({data.at[index, 'ID_REF']: data.at[index, 'UCSC_REFGENE_NAME']})
+        dic.update({data.at[index, 'ID_REF']: data.at[index, 'BOP']})
     return dic
 
 
-def get_gene_to_cpg_dictionary(data):
-    data = data.sort_values(by='UCSC_REFGENE_NAME')
+def get_bop_to_cpg_dictionary(data):
+    data = data.sort_values(by='BOP')
     dic = {}
     for index in data.index:
-        for name in data.at[index, 'UCSC_REFGENE_NAME']:
-            if name not in dic:
-                dic.update({name: [data.at[index, 'ID_REF']]})
-            else:
-                dic[name].append(data.at[index, 'ID_REF'])
+        bop = data.at[index, 'BOP']
+        if bop not in dic:
+            dic.update({bop: [data.at[index, 'ID_REF']]})
+        else:
+            dic[bop].append(data.at[index, 'ID_REF'])
     return dic
 
 
@@ -78,24 +78,25 @@ def main():
     data = correct_data(data)
     print(data)
 
-    cpg_to_gene = get_cpg_to_gene_dictionary(data)
-    print(len(cpg_to_gene))
+    cpg_to_bop = get_cpg_to_bop_dictionary(data)
+    print(len(cpg_to_bop))
     i = 0
-    for key, value in cpg_to_gene.items():
-        print(key + ' - ' + str(value))
-        i += 1
-        if i > 9:
-            break
-    gene_to_cpg = get_gene_to_cpg_dictionary(data)
-    print(len(gene_to_cpg))
-    i = 0
-    for key, value in gene_to_cpg.items():
+    for key, value in cpg_to_bop.items():
         print(key + ' - ' + str(value))
         i += 1
         if i > 9:
             break
 
-    result_file = open('result_gene_table.txt', 'w', encoding='utf-8')
+    bop_to_cpg = get_bop_to_cpg_dictionary(data)
+    print(len(bop_to_cpg))
+    i = 0
+    for key, value in bop_to_cpg.items():
+        print(key + ' - ' + str(value))
+        i += 1
+        if i > 9:
+            break
+
+    result_file = open('result_bop_table.txt', 'w', encoding='utf-8')
     try:
         data_file = open('..\\methylation_data\\average_beta.txt', 'r', encoding='utf-8')
     except FileNotFoundError:
@@ -106,7 +107,7 @@ def main():
     width = len(names) - 1
     print('width =', width)
     table_dictionary = {}
-    for key, value in gene_to_cpg.items():
+    for key, value in bop_to_cpg.items():
         table_dictionary.update({key: np.zeros(width, dtype=np.float)})
 
     key_errors = 0
@@ -115,16 +116,16 @@ def main():
         cpg_name = line.pop(0)
         line = np.array(line, dtype=np.float)
         try:
-            for gene in cpg_to_gene[cpg_name]:
-                table_dictionary[gene] += line
+            bop = cpg_to_bop[cpg_name]
+            table_dictionary[bop] += line
         except KeyError:
             key_errors += 1
         except ValueError:
-            print(gene)
+            print(bop)
     print('KeyError count:', key_errors)
 
     for key, value in table_dictionary.items():
-        value /= len(gene_to_cpg[key])
+        value /= len(bop_to_cpg[key])
         result_file.write(key + '\t')
         for el in value:
             result_file.write(' ' + str(el))
