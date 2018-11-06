@@ -1,6 +1,7 @@
 # PyCharm exceptions
 .idea/
 venv/
+__pycache__/
 methylation_data/*.txt
 
 *.dat

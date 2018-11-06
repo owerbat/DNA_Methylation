@@ -136,4 +136,5 @@ def main():
     annotations.close()
 
 
-main()
+if __name__ == "__main__":
+    main()
