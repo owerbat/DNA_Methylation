@@ -30,13 +30,6 @@ def correct_cpg_data():
     data = cpg_sites_to_bops.correct_data(data)
     data = data.sort_values(by='BOP')
     # bop_to_cpg = cpg_sites_to_bops.get_bop_to_cpg_dictionary(data)
-    '''i = 0
-    print(len(bop_to_cpg))
-    for key, value in bop_to_cpg.items():
-        if len(value) < 3:
-            data = data[data.BOP != key]
-        print(i)
-        i += 1'''
     return data
 
 
