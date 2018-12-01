@@ -29,4 +29,5 @@ def main():
     file.close()
 
 
-main()
+if __name__ == '__main__':
+    main()
