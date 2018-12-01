@@ -23,7 +23,7 @@ def remove_repeating_elements(lst):
     return result
 
 
-def prepare__data(to_delete):
+def prepare_data(to_delete):
     try:
         annotations = open('..\\..\\methylation_data\\annotations.dat', 'rb')
     except FileNotFoundError:
@@ -77,16 +77,30 @@ def get_ages():
     return ages, male_ages, female_ages, male_numbers, female_numbers
 
 
-def get_cpg_data(df, sex=''):
+def get_gene_list():
     try:
-        data_file = open('..\\..\\methylation_data\\average_beta.txt', 'r', encoding='utf-8')
+        data_file = open('..\\Results\\gene_average_beta.txt', 'r', encoding='utf-8')
+    except FileNotFoundError:
+        print('There is no data file')
+        return 2
+
+    names = []
+    for line in data_file:
+        names.append(line.split()[0])
+    return names
+
+
+def get_cpg_data(sex='', info_type='cpg'):
+    try:
+        # data_file = open('..\\..\\methylation_data\\average_beta.txt', 'r', encoding='utf-8')  # for cpg
+        data_file = open('..\\Results\\gene_average_beta.txt', 'r', encoding='utf-8')  # for gene
     except FileNotFoundError:
         print('There is no data file')
         return 2
 
     cpg_r = {}
     ages, male_ages, female_ages, male_numbers, female_numbers = get_ages()
-    data_file.readline()
+    # data_file.readline()  # for cpg
     j = 0
     for line in data_file:
         y = line.split()
@@ -112,7 +126,10 @@ def get_cpg_data(df, sex=''):
 
     j = 0
     r_values = []
-    cpg_names = list(df['ID_REF'])
+
+    # cpg_names = list(df['ID_REF'])  # for cpg
+    cpg_names = get_gene_list()  # for gene
+
     for cpg in cpg_names:
         try:
             r_values.append(cpg_r[cpg])
@@ -122,22 +139,22 @@ def get_cpg_data(df, sex=''):
     r_values, cpg_names = (list(t) for t in zip(*sorted(zip(r_values, cpg_names), reverse=True)))
 
     if sex == '':
-        cpg_data_file = open('best_cpg.txt', 'w', encoding='utf-8')
+        cpg_data_file = open('best_' + info_type + '.txt', 'w', encoding='utf-8')
     elif sex == 'M':
-        cpg_data_file = open('best_male_cpg.txt', 'w', encoding='utf-8')
+        cpg_data_file = open('best_male_' + info_type + '.txt', 'w', encoding='utf-8')
     elif sex == 'F':
-        cpg_data_file = open('best_female_cpg.txt', 'w', encoding='utf-8')
+        cpg_data_file = open('best_female_' + info_type + '.txt', 'w', encoding='utf-8')
     length = int(len(r_values) * 0.05)
     for i in range(length):
         cpg_data_file.write(cpg_names[i] + '\t' + str(r_values[i]) + '\n')
     cpg_data_file.close()
 
 
-def cpg_best():
+def cpg_best(info_type='cpg'):
     try:
-        best_file = open('best_cpg.txt', 'r', encoding='utf-8')
-        male_file = open('best_male_cpg.txt', 'r', encoding='utf-8')
-        female_file = open('best_female_cpg.txt', 'r', encoding='utf-8')
+        best_file = open('best_' + info_type + '.txt', 'r', encoding='utf-8')
+        male_file = open('best_male_' + info_type + '.txt', 'r', encoding='utf-8')
+        female_file = open('best_female_' + info_type + '.txt', 'r', encoding='utf-8')
     except FileNotFoundError:
         print('There is no data file')
         return 2
@@ -179,7 +196,7 @@ def cpg_best():
     for cpg in best_best:
         best_list.append([float(best_dict[cpg]), cpg])
     best_list.sort(reverse=True)
-    best_best_file = open('best-best_cpg.txt', 'w', encoding='utf-8')
+    best_best_file = open('best-best_' + info_type + '.txt', 'w', encoding='utf-8')
     for item in best_list:
         best_best_file.write(item[1] + '\t' + str(item[0]) + '\n')
     best_best_file.close()
@@ -188,7 +205,7 @@ def cpg_best():
     for cpg in best_best_male:
         best_list.append([float(male_dict[cpg]), cpg])
     best_list.sort(reverse=True)
-    best_male_file = open('best-best_male_cpg.txt', 'w', encoding='utf-8')
+    best_male_file = open('best-best_male_' + info_type + '.txt', 'w', encoding='utf-8')
     for item in best_list:
         best_male_file.write(item[1] + '\t' + str(item[0]) + '\n')
     best_male_file.close()
@@ -197,16 +214,17 @@ def cpg_best():
     for cpg in best_best_female:
         best_list.append([float(female_dict[cpg]), cpg])
     best_list.sort(reverse=True)
-    best_female_file = open('best-best_female_cpg.txt', 'w', encoding='utf-8')
+    best_female_file = open('best-best_female_' + info_type + '.txt', 'w', encoding='utf-8')
     for item in best_list:
         best_female_file.write(item[1] + '\t' + str(item[0]) + '\n')
     best_female_file.close()
 
 
 def main():
-    # data = prepare__data({'UCSC_REFGENE_NAME': [''], 'CHR': ['X', 'Y']})
+    # data = prepare_data({'UCSC_REFGENE_NAME': [''], 'CHR': ['X', 'Y']})
     # print(data)
-    cpg_best()
+    # get_cpg_data(sex='F', info_type='gene')
+    cpg_best(info_type='gene')
 
 
 if __name__ == '__main__':

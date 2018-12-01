@@ -29,12 +29,12 @@ def correct_data(data):
     names.pop(3)
 
     data = data[names]
-    data = data[data.UCSC_REFGENE_NAME != '']
+    data = data[data.UCSC_REFGENE_NAME != '']  # *
     data = data[data.RELATION_TO_UCSC_CPG_ISLAND != 'N_Shelf']
     data = data[data.RELATION_TO_UCSC_CPG_ISLAND != 'S_Shelf']
     data = data[data.RELATION_TO_UCSC_CPG_ISLAND != '']
-    data = data[data.CHR != 'X']
-    data = data[data.CHR != 'Y']
+    data = data[data.CHR != 'X']  # *
+    data = data[data.CHR != 'Y']  # *
     data = data[data.CHR != '']
 
     data['n.CpG'] = data['n.CpG'].apply(convert)
