@@ -224,7 +224,8 @@ def main():
     # data = prepare_data({'UCSC_REFGENE_NAME': [''], 'CHR': ['X', 'Y']})
     # print(data)
     # get_cpg_data(sex='F', info_type='gene')
-    cpg_best(info_type='gene')
+    # cpg_best(info_type='gene')
+    pass
 
 
 if __name__ == '__main__':
