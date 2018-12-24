@@ -87,6 +87,7 @@ def get_gene_list():
     names = []
     for line in data_file:
         names.append(line.split()[0])
+    data_file.close()
     return names
 
 
